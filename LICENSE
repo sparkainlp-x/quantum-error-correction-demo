@@ -1,17 +1,21 @@
-Copyright (c) 2026 sparkainlpx.xyz
+MIT License
 
-ALL RIGHTS RESERVED.
+Copyright (c) 2026 Jean-François Brisson / Spark AI NLP
 
-This software and all associated code, documentation, and related materials
-contained in this repository are the exclusive proprietary property of
-sparkainlpx.xyz.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-No part of this software may be reproduced, distributed, transmitted, modified,
-displayed, performed, or used in any form or by any means, including but not
-limited to electronic, mechanical, photocopying, recording, or otherwise,
-without the prior written permission of sparkainlpx.xyz.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-Unauthorized use, copying, distribution, or modification of this software is
-strictly prohibited and may result in legal action.
-
-For licensing inquiries, contact: sparkainlpx.xyz
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
