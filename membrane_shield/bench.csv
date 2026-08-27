@@ -1,0 +1,7 @@
+benchmark,sector,count,elapsed_s,throughput_per_s
+perturbation_gen,ANY,1435437,5.000,"287,087"
+request_flip,ANY,102580,5.000,"20,516"
+run_cell,ANY,103800,5.004,"20,743"
+perturbation_gen,FOLD8,612141,5.000,"122,428"
+request_flip,FOLD8,52243,5.000,"10,448"
+run_cell,FOLD8,53600,5.005,"10,709"
