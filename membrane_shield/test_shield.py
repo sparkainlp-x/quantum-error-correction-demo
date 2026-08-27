@@ -5,7 +5,17 @@ from __future__ import annotations
 
 import unittest
 
-from membrane_shield import WIDTH, Face, MembraneShield, Role, ShieldDenied, symmetry_sector
+from membrane_shield import (
+    WIDTH,
+    Face,
+    MembraneShield,
+    Role,
+    Sector,
+    ShieldDenied,
+    mu,
+    sigma,
+    symmetry_sector,
+)
 
 
 def zero_vec():
@@ -188,6 +198,51 @@ class ShieldTests(unittest.TestCase):
                 declared_pattern=wrong_pattern,
                 logical_ok=True,
             )
+
+    def test_mu_involution(self):
+        for i in range(WIDTH):
+            self.assertEqual(mu(mu(i)), i)
+
+    def test_sigma_order_8(self):
+        for i in range(WIDTH):
+            x = i
+            for _ in range(8):
+                x = sigma(x)
+            self.assertEqual(x, i)
+
+    def test_sector_even_rejects_odd_change(self):
+        self._arm(tau=0.5)
+        new_b = bump(zero_vec(), 3, 0.1)
+        corr = bits_from_boundary(new_b)
+        with self.assertRaises(ShieldDenied):
+            self.s.request_flip(
+                self.d,
+                new_b,
+                H=self.H,
+                correction=corr,
+                syndrome=corr,
+                declared_pattern=self._declared(new_b),
+                declared_sector=Sector.EVEN,
+                logical_ok=True,
+            )
+
+    def test_sector_fold8_accepts_sigma_invariant_pattern(self):
+        self._arm(tau=0.5)
+        new_b = zero_vec()
+        for i in range(0, WIDTH, 4):
+            new_b[i] = 0.1
+        corr = bits_from_boundary(new_b)
+        live = self.s.request_flip(
+            self.d,
+            new_b,
+            H=self.H,
+            correction=corr,
+            syndrome=corr,
+            declared_pattern=self._declared(new_b),
+            declared_sector=Sector.FOLD8,
+            logical_ok=True,
+        )
+        self.assertEqual(live.boundary[0], 0.1)
 
 
 if __name__ == "__main__":

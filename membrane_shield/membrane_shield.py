@@ -32,8 +32,25 @@ class Face(str, Enum):
     BOUNDARY = "B"
 
 
+class Sector(str, Enum):
+    ANY = "ANY"
+    EVEN = "EVEN"
+    ODD = "ODD"
+    FOLD8 = "FOLD8"
+
+
 class ShieldDenied(Exception):
     """Fail-closed: every unauthorized or malformed act raises this."""
+
+
+def mu(i: int) -> int:
+    """Möbius index map: mu(i) = (i + 16) mod 32."""
+    return (int(i) + 16) % WIDTH
+
+
+def sigma(i: int) -> int:
+    """Fold index map: sigma(i) = (i + 4) mod 32."""
+    return (int(i) + 4) % WIDTH
 
 
 def _finite_vec(name: str, vec) -> tuple[float, ...]:
@@ -68,6 +85,35 @@ def symmetry_sector(observed_boundary, reference_boundary) -> tuple[int, ...]:
         else:
             out.append(0)
     return tuple(out)
+
+
+def symmetry_ok(
+    observed_boundary,
+    reference_boundary,
+    *,
+    declared_pattern=None,
+    declared_sector: Sector | str = Sector.ANY,
+) -> bool:
+    pattern = symmetry_sector(observed_boundary, reference_boundary)
+    if declared_pattern is not None:
+        try:
+            declared = tuple(int(x) for x in declared_pattern)
+        except (TypeError, ValueError):
+            return False
+        if len(declared) != WIDTH or any(x not in (-1, 0, 1) for x in declared):
+            return False
+        if pattern != declared:
+            return False
+
+    sector = declared_sector if isinstance(declared_sector, Sector) else Sector(str(declared_sector))
+    if sector is Sector.ANY:
+        return True
+    if sector is Sector.EVEN:
+        return all(v == 0 or (i % 2 == 0) for i, v in enumerate(pattern))
+    if sector is Sector.ODD:
+        return all(v == 0 or (i % 2 == 1) for i, v in enumerate(pattern))
+    # FOLD8: invariance under sigma (period-4 class consistency)
+    return all(pattern[i] == pattern[sigma(i)] for i in range(WIDTH))
 
 
 def _finite_binary32(name: str, vec) -> tuple[int, ...]:
@@ -295,6 +341,7 @@ class MembraneShield:
         correction=None,
         syndrome=None,
         declared_pattern=None,
+        declared_sector: Sector | str = Sector.ANY,
         logical_ok: bool,
     ) -> MembraneFrame:
         """Request paired membrane flip; admission uses computed Hc==s, residual<=tau, and symmetry-pattern match."""
@@ -305,30 +352,14 @@ class MembraneShield:
         if H is None or correction is None or syndrome is None:
             self._audit(cap, "flip", False, "missing syndrome proof")
             raise ShieldDenied("syndrome proof required (computed Hc == s)")
-        computed = _h_mul_mod2(H, correction) == _finite_binary32("syndrome", syndrome)
-        if not computed:
-            self._audit(cap, "flip", False, "syndrome rejected")
-            raise ShieldDenied("syndrome not admitted (Hc != s)")
-        if not logical_ok:
-            self._audit(cap, "flip", False, "logical check failed")
-            raise ShieldDenied("logical operator would be flipped")
-
+        syndrome_ok = _h_mul_mod2(H, correction) == _finite_binary32("syndrome", syndrome)
         proposed_b = _finite_vec("B'", new_boundary)
-        if declared_pattern is None:
-            self._audit(cap, "flip", False, "missing declared symmetry pattern")
-            raise ShieldDenied("declared symmetry pattern required")
-        try:
-            declared = tuple(int(x) for x in declared_pattern)
-        except (TypeError, ValueError) as exc:
-            self._audit(cap, "flip", False, "malformed declared symmetry pattern")
-            raise ShieldDenied("declared symmetry pattern malformed") from exc
-        if len(declared) != WIDTH or any(x not in (-1, 0, 1) for x in declared):
-            self._audit(cap, "flip", False, "declared symmetry pattern invalid")
-            raise ShieldDenied("declared symmetry pattern invalid")
-        computed_pattern = symmetry_sector(proposed_b, self.state.reference.boundary)
-        if computed_pattern != declared:
-            self._audit(cap, "flip", False, "symmetry sector mismatch")
-            raise ShieldDenied("symmetry sector mismatch")
+        symmetry_ok_flag = symmetry_ok(
+            proposed_b,
+            self.state.reference.boundary,
+            declared_pattern=declared_pattern,
+            declared_sector=declared_sector,
+        )
 
         delta = tuple(pb - ob for pb, ob in zip(proposed_b, self.state.live.boundary))
         proposed_u = _finite_vec("U'", tuple(u + d for u, d in zip(self.state.live.bulk, delta)))
@@ -336,10 +367,22 @@ class MembraneShield:
         r_b = residual_max(proposed_b, self.state.reference.boundary)
         r_u = residual_max(proposed_u, self.state.reference.bulk)
         agg = max(r_b, r_u)
-        if agg > self.state.tau:
-            self.state.collapse = True
-            self._audit(cap, "flip", False, f"residual {agg} > tau {self.state.tau}; latched")
-            raise ShieldDenied("residual breach — shield latched (collapse)")
+        residual_ok = agg <= self.state.tau
+        admitted = syndrome_ok and residual_ok and symmetry_ok_flag
+        if not admitted:
+            if not residual_ok:
+                self.state.collapse = True
+                self._audit(cap, "flip", False, f"residual {agg} > tau {self.state.tau}; latched")
+                raise ShieldDenied("residual breach — shield latched (collapse)")
+            if not syndrome_ok:
+                self._audit(cap, "flip", False, "syndrome rejected")
+                raise ShieldDenied("syndrome not admitted (Hc != s)")
+            if not symmetry_ok_flag:
+                self._audit(cap, "flip", False, "symmetry sector mismatch")
+                raise ShieldDenied("symmetry sector mismatch")
+        if not logical_ok:
+            self._audit(cap, "flip", False, "logical check failed")
+            raise ShieldDenied("logical operator would be flipped")
 
         self.state.live = MembraneFrame(bulk=proposed_u, boundary=proposed_b)
         self._audit(cap, "flip", True, f"residual={agg:.6g}")
@@ -375,7 +418,11 @@ def membrane_decode(
     reference: MembraneFrame,
     tau: float,
 ) -> DecodeReport:
-    """Decoder ABI-compatible software stand-in with computed syndrome and residual gate."""
+    """Decoder ABI-compatible software stand-in with computed parity-signature and residual gate.
+
+    This stand-in computes syndrome_ok by comparing parity signatures `H*c` for observed vs reference
+    binary boundary corrections under an identity-H placeholder.
+    """
     obs_u = _finite_vec("observed.bulk", observed.bulk)
     obs_b = _finite_vec("observed.boundary", observed.boundary)
     ref_u = _finite_vec("reference.bulk", reference.bulk)
@@ -385,9 +432,11 @@ def membrane_decode(
 
     t0 = perf_counter_ns()
     correction = tuple(1 if x >= 0.5 else 0 for x in obs_b)
-    syndrome = tuple(1 if x >= 0.5 else 0 for x in ref_b)
+    reference_correction = tuple(1 if x >= 0.5 else 0 for x in ref_b)
     H = tuple(tuple(1 if i == j else 0 for j in range(WIDTH)) for i in range(WIDTH))
-    syndrome_ok = _h_mul_mod2(H, correction) == _finite_binary32("syndrome", syndrome)
+    syndrome = _h_mul_mod2(H, correction)
+    expected_syndrome = _h_mul_mod2(H, reference_correction)
+    syndrome_ok = syndrome == expected_syndrome
 
     residual = max(
         max(abs(o - r) for o, r in zip(obs_u, ref_u)),
