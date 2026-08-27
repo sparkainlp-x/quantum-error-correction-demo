@@ -12,6 +12,7 @@ from .membrane_shield import (
     action_requires_live,
     membrane_decode,
     residual_max,
+    symmetry_sector,
 )
 
 __all__ = [
@@ -28,4 +29,5 @@ __all__ = [
     "action_requires_live",
     "membrane_decode",
     "residual_max",
+    "symmetry_sector",
 ]

@@ -56,12 +56,25 @@ def residual_max(observed, reference) -> float:
     return max(abs(o - r) for o, r in zip(obs, ref))
 
 
+def symmetry_sector(observed_boundary, reference_boundary) -> tuple[int, ...]:
+    obs = _finite_vec("observed_boundary", observed_boundary)
+    ref = _finite_vec("reference_boundary", reference_boundary)
+    out: list[int] = []
+    for o, r in zip(obs, ref):
+        if o > r:
+            out.append(1)
+        elif o < r:
+            out.append(-1)
+        else:
+            out.append(0)
+    return tuple(out)
+
+
 def _finite_binary32(name: str, vec) -> tuple[int, ...]:
     bits = _finite_vec(name, vec)
-    out = tuple(int(x) for x in bits)
-    if any(x not in (0, 1) for x in out):
+    if any(x not in (0.0, 1.0) for x in bits):
         raise ShieldDenied(f"{name}: non-binary component")
-    return out
+    return tuple(int(x) for x in bits)
 
 
 @dataclass(frozen=True)
@@ -278,12 +291,13 @@ class MembraneShield:
         cap,
         new_boundary,
         *,
-        syndrome_ok: bool,
         H=None,
         correction=None,
         syndrome=None,
-        logical_ok: bool = True,
+        declared_pattern=None,
+        logical_ok: bool,
     ) -> MembraneFrame:
+        """Request paired membrane flip; admission uses computed Hc==s, residual<=tau, and symmetry-pattern match."""
         self._need(cap, flip=True)
         if self.state.locked:
             self._audit(cap, "flip", False, "shield locked — no live calibration")
@@ -292,7 +306,7 @@ class MembraneShield:
             self._audit(cap, "flip", False, "missing syndrome proof")
             raise ShieldDenied("syndrome proof required (computed Hc == s)")
         computed = _h_mul_mod2(H, correction) == _finite_binary32("syndrome", syndrome)
-        if not computed or not syndrome_ok:
+        if not computed:
             self._audit(cap, "flip", False, "syndrome rejected")
             raise ShieldDenied("syndrome not admitted (Hc != s)")
         if not logical_ok:
@@ -300,8 +314,24 @@ class MembraneShield:
             raise ShieldDenied("logical operator would be flipped")
 
         proposed_b = _finite_vec("B'", new_boundary)
+        if declared_pattern is None:
+            self._audit(cap, "flip", False, "missing declared symmetry pattern")
+            raise ShieldDenied("declared symmetry pattern required")
+        try:
+            declared = tuple(int(x) for x in declared_pattern)
+        except (TypeError, ValueError) as exc:
+            self._audit(cap, "flip", False, "malformed declared symmetry pattern")
+            raise ShieldDenied("declared symmetry pattern malformed") from exc
+        if len(declared) != WIDTH or any(x not in (-1, 0, 1) for x in declared):
+            self._audit(cap, "flip", False, "declared symmetry pattern invalid")
+            raise ShieldDenied("declared symmetry pattern invalid")
+        computed_pattern = symmetry_sector(proposed_b, self.state.reference.boundary)
+        if computed_pattern != declared:
+            self._audit(cap, "flip", False, "symmetry sector mismatch")
+            raise ShieldDenied("symmetry sector mismatch")
+
         delta = tuple(pb - ob for pb, ob in zip(proposed_b, self.state.live.boundary))
-        proposed_u = tuple(u + d for u, d in zip(self.state.live.bulk, delta))
+        proposed_u = _finite_vec("U'", tuple(u + d for u, d in zip(self.state.live.bulk, delta)))
 
         r_b = residual_max(proposed_b, self.state.reference.boundary)
         r_u = residual_max(proposed_u, self.state.reference.bulk)
@@ -376,4 +406,5 @@ def membrane_decode(
 
 
 def action_requires_live(write: bool, flip: bool, commit: bool) -> bool:
+    """Return whether an action touches live membrane state."""
     return write or flip or commit

@@ -8,7 +8,7 @@ Spark membrane stack spanning OES-32 simulation logic and decoder integration.
 - Non-finite float inputs (NaN/Inf) are rejected.
 - Observateur reads boundary copies only, never bulk aliases.
 - Calibration is dual-control: one agent proposes, a different agent countersigns, and only gardien commits.
-- Flip is admitted only when syndrome checks are valid and residual remains within `tau`.
+- Flip is admitted only when computed syndrome proof (`Hc == s`) is valid, residual remains within `tau`, and `symmetry_sector(B', B*)` matches the declared pattern.
 - Residual breach latches collapse and blocks further flips until gardien reset to sealed reference.
 
 ## Operational Roles
