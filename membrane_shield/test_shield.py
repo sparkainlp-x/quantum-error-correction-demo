@@ -1,6 +1,6 @@
 import unittest
 
-from membrane_shield.membrane_shield import MembraneShield, PolicyError
+from membrane_shield import MembraneShield, PolicyError
 
 
 class MembraneShieldTests(unittest.TestCase):
