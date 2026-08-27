@@ -40,7 +40,6 @@ from __future__ import annotations
 import argparse
 import csv
 import random
-import sys
 from dataclasses import dataclass, field
 from typing import List, Optional, Sequence
 
