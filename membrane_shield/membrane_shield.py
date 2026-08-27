@@ -88,11 +88,12 @@ class MembraneShield:
         tau: float,
     ) -> bool:
         """Allow decoder flip request only when parity and residual checks pass."""
+        self._validate_width32(c, "c")
+        self._validate_width32(s, "s")
+        self._validate_finite((residual, tau), "residual/tau")
+
         if self.collapsed:
             self._deny("collapse latch is active")
-
-        self._validate_width32(c, "c")
-        self._validate_finite((residual, tau), "residual/tau")
 
         expected = self._mat_vec_mod2(H, c)
         syndrome = [int(x) & 1 for x in s]

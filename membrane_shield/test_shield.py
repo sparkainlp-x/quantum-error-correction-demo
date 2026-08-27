@@ -14,8 +14,10 @@ class MembraneShieldTests(unittest.TestCase):
             self.shield.observateur_copy_B([1] * 31)
 
     def test_finite_floats_enforced(self) -> None:
-        with self.assertRaises(ValueError):
-            self.shield.request_flip(self.H_identity, self.c, self.c, float("nan"), 0.1)
+        for bad in (float("nan"), float("inf")):
+            with self.subTest(bad=bad):
+                with self.assertRaises(ValueError):
+                    self.shield.request_flip(self.H_identity, self.c, self.c, bad, 0.1)
 
     def test_observateur_rejects_u_or_f_access(self) -> None:
         with self.assertRaises(PolicyError):
