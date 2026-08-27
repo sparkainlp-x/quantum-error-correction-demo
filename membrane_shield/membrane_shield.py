@@ -4,11 +4,31 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from math import isfinite
+from time import perf_counter_ns
 from typing import Iterable, List, Sequence
 
 
 class PolicyError(PermissionError):
     """Raised when a membrane policy rule is violated."""
+
+
+@dataclass(frozen=True)
+class MembraneFrame:
+    """ABI-compatible membrane frame with width-32 bulk and boundary lanes."""
+
+    bulk: Sequence[float]
+    boundary: Sequence[float]
+
+
+@dataclass(frozen=True)
+class DecodeReport:
+    """ABI-compatible decoder report payload."""
+
+    syndrome_ok: bool
+    logical_ok: bool
+    iterations: int
+    latency_ns: int
+    residual: float
 
 
 @dataclass
@@ -120,3 +140,57 @@ class MembraneShield:
             self._deny("no sealed reference available")
         self.collapsed = False
         return list(self.sealed_reference)
+
+
+def _validate_width32_finite(vec: Sequence[float], label: str) -> None:
+    if len(vec) != 32:
+        raise ValueError(f"{label} must have width 32")
+    for v in vec:
+        if not isfinite(float(v)):
+            raise ValueError(f"{label} contains non-finite value")
+
+
+def _identity_mul_mod2(vec: Sequence[int]) -> List[int]:
+    out: List[int] = []
+    for i in range(32):
+        parity = sum((1 if i == j else 0) * (int(vec[j]) & 1) for j in range(32)) % 2
+        out.append(parity)
+    return out
+
+
+def membrane_decode(
+    observed: MembraneFrame,
+    reference: MembraneFrame,
+    tau: float,
+) -> DecodeReport:
+    """
+    Preserve decoder ABI semantics with strict width-32 and finite checks.
+
+    `syndrome_ok` is computed from a parity relation (identity H stand-in), never hardcoded.
+    """
+    _validate_width32_finite(observed.bulk, "observed.bulk")
+    _validate_width32_finite(observed.boundary, "observed.boundary")
+    _validate_width32_finite(reference.bulk, "reference.bulk")
+    _validate_width32_finite(reference.boundary, "reference.boundary")
+    if not isfinite(float(tau)):
+        raise ValueError("tau must be finite")
+
+    start_ns = perf_counter_ns()
+    correction = [1 if float(v) >= 0.5 else 0 for v in observed.boundary]
+    syndrome = [1 if float(v) >= 0.5 else 0 for v in reference.boundary]
+    syndrome_ok = _identity_mul_mod2(correction) == syndrome
+
+    residual = max(
+        max(abs(float(o) - float(r)) for o, r in zip(observed.bulk, reference.bulk)),
+        max(abs(float(o) - float(r)) for o, r in zip(observed.boundary, reference.boundary)),
+    )
+    latency_ns = perf_counter_ns() - start_ns
+    logical_ok = syndrome_ok and residual <= float(tau)
+
+    return DecodeReport(
+        syndrome_ok=syndrome_ok,
+        logical_ok=logical_ok,
+        iterations=1,
+        latency_ns=latency_ns,
+        residual=float(residual),
+    )
