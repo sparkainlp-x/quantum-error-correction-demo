@@ -1,0 +1,9 @@
+Follow .github/copilot-instructions.md strictly.
+
+Fail closed. Width 32. Finite floats only.
+observateur: copy of B only — never U, never F.
+calibrateur: quarantine only; different agent countersigns; only gardien commits.
+decodeur: request_flip only if H c == s (never hardcoded True) AND residual <= tau.
+Residual breach latches collapse. Only gardien resets to last sealed reference.
+No AdS/CFT, HaPPY, FLM-confirmation, HTC, gravity-on-FPGA, or medical claims.
+Do not log capability secrets. Add deny-path tests for every new privilege.
