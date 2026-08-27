@@ -1,17 +1,22 @@
-# Membrane Shield Policy
+# Membrane Shield
 
-The membrane shield is a policy enforcement boundary for privileged decoder actions.
+The membrane shield is a fail-closed authorization and admission-control layer for the
+Spark membrane stack spanning OES-32 simulation logic and decoder integration.
 
-## Core Constraints
-- Default deny (fail closed).
-- Width 32 for protected bit-vectors.
-- Finite floats only.
-- observateur reads only a copy of `B`.
-- calibrateur is quarantine-only, with distinct countersigner requirement.
-- Only gardien can finalize commit-class actions.
-- `request_flip` requires computed `H * c == s` and `residual <= tau`.
-- Residual breach latches collapse until gardien reset to sealed reference.
+## Required Invariants
+- Width is fixed at 32 for protected vectors and membrane faces.
+- Non-finite float inputs (NaN/Inf) are rejected.
+- Observateur reads boundary copies only, never bulk aliases.
+- Calibration is dual-control: one agent proposes, a different agent countersigns, and only gardien commits.
+- Flip is admitted only when syndrome checks are valid and residual remains within `tau`.
+- Residual breach latches collapse and blocks further flips until gardien reset to sealed reference.
 
-## Safety Rules
-- No capability-secret logging.
-- Add deny-path tests for each privilege-bearing operation.
+## Operational Roles
+- `observateur`: read-only copy access to boundary.
+- `calibrateur`: quarantine calibration proposals only.
+- `decodeur`: flip requests subject to admission checks.
+- `gardien`: commit, revoke, latch, and reset authority.
+
+## Safety Position
+This shield implements software policy controls and decoder gating only.
+It does not make claims about gravity, medical treatment, or physical-device behavior.

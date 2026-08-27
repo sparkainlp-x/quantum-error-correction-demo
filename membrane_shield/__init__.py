@@ -1,3 +1,31 @@
-from .membrane_shield import MembraneShield, PolicyError
+from .membrane_shield import (
+    WIDTH,
+    Capability,
+    CalibrationProposal,
+    DecodeReport,
+    Face,
+    MembraneFrame,
+    MembraneShield,
+    Role,
+    ShieldDenied,
+    ShieldState,
+    action_requires_live,
+    membrane_decode,
+    residual_max,
+)
 
-__all__ = ["MembraneShield", "PolicyError"]
+__all__ = [
+    "WIDTH",
+    "Capability",
+    "CalibrationProposal",
+    "DecodeReport",
+    "Face",
+    "MembraneFrame",
+    "MembraneShield",
+    "Role",
+    "ShieldDenied",
+    "ShieldState",
+    "action_requires_live",
+    "membrane_decode",
+    "residual_max",
+]
