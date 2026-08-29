@@ -231,6 +231,9 @@ benchmark_output/
 results/
 data/
 
+# Generated CSV benchmark output
+*.csv
+
 # Local IDE / tool configs (per-device)
 .idea/
 .vscode/

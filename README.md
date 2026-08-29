@@ -219,7 +219,7 @@ Time-symmetric membrane flip + infinity loops: STABLE ✅
 ### Documentation
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — Technical deep-dive
 - **[LICENSE](LICENSE)** — Proprietary commercial license
-- **[PERFORMANCE.md](PERFORMANCE.md)** — Benchmark analysis
+- **[membrane_shield/PERFORMANCE.md](membrane_shield/PERFORMANCE.md)** — Benchmark analysis
 
 ---
 
@@ -227,19 +227,20 @@ Time-symmetric membrane flip + infinity loops: STABLE ✅
 
 ```
 quantum-error-correction-demo/
-├── README.md                    # You are here
-├── LICENSE                      # Proprietary commercial license
-├── ARCHITECTURE.md              # Technical specifications
-├── PERFORMANCE.md               # Benchmark analysis
-├── requirements.txt             # Python dependencies
-├── oes32_v14_improved.py        # Core simulation engine
-├── docs/
-│   ├── investor_guide.md        # For investors
-│   ├── technical_guide.md       # For researchers
-│   └── holoheal_framework.md    # Therapeutic application
-└── demos/
-    ├── dashboard.html           # Interactive results viewer
-    └── colab_notebook.ipynb     # JAX-accelerated notebook
+├── README.md                         # You are here
+├── LICENSE                           # Proprietary commercial license
+├── ARCHITECTURE.md                   # Technical deep-dive (→ membrane_shield/SPEC.md)
+├── requirements.txt                  # Python dependencies
+├── oes32_v14_improved.py             # Core simulation engine
+└── membrane_shield/                  # OES-32 Membrane Shield module
+    ├── __init__.py
+    ├── membrane_shield.py            # Core implementation
+    ├── monte_carlo.py                # Monte Carlo sweep simulation
+    ├── benchmark.py                  # Performance benchmark
+    ├── test_shield.py                # Unit tests (52 tests)
+    ├── test_monte_carlo.py           # MC validation tests (42 tests)
+    ├── SPEC.md                       # Full technical specification
+    └── PERFORMANCE.md                # Benchmark results & competitive comparison
 ```
 
 ---

@@ -1,0 +1,11 @@
+# OES-32 — Python dependencies
+#
+# The membrane_shield core module requires only the Python standard library.
+# The optional packages below enable progress bars and GPU acceleration.
+
+# Optional: progress bars for oes32_v14_improved.py
+tqdm>=4.60.0
+
+# Optional: JAX-accelerated runs (Colab / GPU recommended)
+# Uncomment if you have a compatible GPU or use on Google Colab:
+# jax[cuda12_pip]>=0.4.0 --find-links https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
