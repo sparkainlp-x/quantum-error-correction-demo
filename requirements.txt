@@ -1,7 +1,12 @@
 # OES-32 — Python dependencies
 #
 # The membrane_shield core module requires only the Python standard library.
-# The optional packages below enable progress bars and GPU acceleration.
+# The oes32_wave simulator requires NumPy and Matplotlib.
+# Tests require pytest.
+
+numpy>=1.24.0
+matplotlib>=3.7.0
+pytest>=7.0.0
 
 # Optional: progress bars for oes32_v14_improved.py
 tqdm>=4.60.0
