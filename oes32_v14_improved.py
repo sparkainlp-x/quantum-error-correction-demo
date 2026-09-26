@@ -173,6 +173,7 @@ def print_report(results: Dict[str, Any]) -> None:
     print(f"Timestamp           : {results['timestamp']}")
     print(f"Iterations          : {results['iterations']:,}")
     print(f"Erasure Probability : {results['erasure_prob']*100:.0f}%")
+    print(f"Seed                : {results.get('seed') if results.get('seed') is not None else 'none (non-deterministic)'}")
     print("-"*70)
     print(f"Coherence Before    : {results['avg_coherence_before']:.4f}")
     print(f"Coherence After     : {results['avg_coherence_after']:.4f}")
@@ -192,8 +193,15 @@ def print_report(results: Dict[str, Any]) -> None:
 
 def main(num_iterations: int = 1_000_000,
          erasure_prob: float = 0.20,
-         verbose: bool = False) -> None:
-    """Main entry point for the OES-32 toy simulation (SYNTHETIC)."""
+         verbose: bool = False,
+         seed: "int | None" = None) -> None:
+    """Main entry point for the OES-32 toy simulation (SYNTHETIC).
+
+    If ``seed`` is given, Python's ``random`` module is seeded so the printed
+    metrics are reproducible (timestamp excepted).
+    """
+    if seed is not None:
+        random.seed(seed)
     if verbose:
         logging.getLogger().setLevel(logging.DEBUG)
     logger.info("Starting OES-32 v14 toy simulation (classical, SYNTHETIC)")
@@ -202,6 +210,7 @@ def main(num_iterations: int = 1_000_000,
         erasure_prob=erasure_prob,
         verbose=verbose
     )
+    results["seed"] = seed
     print_report(results)
     logger.info("Simulation run finished.")
 
@@ -212,9 +221,12 @@ if __name__ == "__main__":
                         help="Number of iterations (default: 1,000,000)")
     parser.add_argument("--erasure", type=float, default=0.20, help="Erasure probability (0.0-1.0)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose mode")
+    parser.add_argument("--seed", type=int, default=None,
+                        help="Seed for Python's random module (reproducible SYNTHETIC output)")
     args, unknown = parser.parse_known_args()
     try:
-        main(num_iterations=args.iterations, erasure_prob=args.erasure, verbose=args.verbose)
+        main(num_iterations=args.iterations, erasure_prob=args.erasure, verbose=args.verbose,
+             seed=args.seed)
     except KeyboardInterrupt:
         print("\nInterrupted by user.")
         sys.exit(130)
