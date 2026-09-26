@@ -1,19 +1,27 @@
 #!/usr/bin/env python3
 """
 oes32_v14_improved.py
-OES-32 Quantum Holographic QECC — Investor Edition v14 (Improved)
+OES-32 toy simulation v14 (classical, SYNTHETIC)
 
-Upgraded spooky architecture with logical relationships between:
+METRIC_TAG=SYNTHETIC. This is a classical Python toy simulation. It uses no
+qubits and implements no quantum error-correcting code. Metric names such as
+"spooky correlation" and "entanglement entropy" are labels for hand-written
+formulas below; they are not quantum measurements.
+
+Known property: recovery success is drawn with probability
+max(0.95, 1 - 0.7 * erasure_prob), so the success rate is ~95% by
+construction whenever erasure_prob >= ~0.07. Values such as 94.92% are
+sampling outcomes of that hard-coded floor, not a measured error-correction rate.
+
+The script models hand-written relationships between:
 - Erasure Probability
 - Coherence (Before / After Recovery)
 - Spooky Correlation
 - Entanglement Entropy
 - System Collapses
 
-NOTE: Default run is 1,000,000,000 iterations (10x longer than previous 100M version)
-for higher statistical precision and smoother metric distributions.
-
-For very large runs, use the JAX-accelerated Colab version for speed.
+Default run is 1,000,000 iterations (laptop-sized). Larger runs only reduce
+sampling noise around the built-in formulas; they do not add evidence.
 """
 
 import argparse
@@ -47,11 +55,11 @@ def is_notebook() -> bool:
 # ====================== UPGRADED SPOOKY ARCHITECTURE ======================
 def simulate_single_trial(erasure_prob: float) -> Dict[str, float]:
     """
-    Upgraded logical simulation for OES-32 Investor Edition.
-    Creates consistent relationships between metrics.
+    One SYNTHETIC trial of the OES-32 toy simulation.
+    Metrics follow hand-written formulas (see module docstring).
     
     Args:
-        erasure_prob: Probability of quantum information erasure (0.0-1.0)
+        erasure_prob: Simulated erasure probability (0.0-1.0)
     
     Returns:
         Dictionary containing trial metrics:
@@ -68,7 +76,8 @@ def simulate_single_trial(erasure_prob: float) -> Dict[str, float]:
     noise = random.gauss(0, 0.045)
     coherence_before = max(0.55, min(0.98, base_coherence + noise))
 
-    # 2. Recovery success probability
+    # 2. Recovery success probability.
+    #    NOTE: hard-coded floor of 0.95 -> success rate ~95% by construction (SYNTHETIC).
     recovery_success_prob = max(0.95, 1.0 - erasure_prob * 0.70)
     recovery_success = random.random() < recovery_success_prob
 
@@ -99,15 +108,15 @@ def simulate_single_trial(erasure_prob: float) -> Dict[str, float]:
         "system_collapse": int(system_collapse)
     }
 
-def run_benchmark(num_iterations: int = 1_000_000_000,
+def run_benchmark(num_iterations: int = 1_000_000,
                   erasure_prob: float = 0.20,
                   verbose: bool = False) -> Dict[str, Any]:
     """
-    Run OES-32 benchmark at specified scale.
+    Run the OES-32 toy simulation (SYNTHETIC) at the specified scale.
     
     Args:
         num_iterations: Number of Monte Carlo trials
-        erasure_prob: Quantum erasure probability (0.0-1.0)
+        erasure_prob: Simulated erasure probability (0.0-1.0)
         verbose: Enable verbose logging
     
     Returns:
@@ -116,7 +125,7 @@ def run_benchmark(num_iterations: int = 1_000_000_000,
     if verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    logger.info(f"Starting OES-32 v14 benchmark: {num_iterations:,} iterations @ {erasure_prob*100:.0f}% erasure")
+    logger.info(f"Starting OES-32 v14 toy simulation (SYNTHETIC): {num_iterations:,} iterations @ {erasure_prob*100:.0f}% erasure")
 
     results = []
     collapses = 0
@@ -156,10 +165,10 @@ def run_benchmark(num_iterations: int = 1_000_000_000,
         "timestamp": datetime.now().isoformat()
     }
 
-def print_investor_report(results: Dict[str, Any]) -> None:
-    """Print professional investor-grade benchmark report."""
+def print_report(results: Dict[str, Any]) -> None:
+    """Print the SYNTHETIC simulation report. Every metric is tagged SYNTHETIC."""
     print("\n" + "="*70)
-    print("OES-32 v14 — INVESTOR REPORT (1 Billion Iterations)")
+    print(f"OES-32 v14 toy simulation report ({results['iterations']:,} iterations) [METRIC_TAG=SYNTHETIC]")
     print("="*70)
     print(f"Timestamp           : {results['timestamp']}")
     print(f"Iterations          : {results['iterations']:,}")
@@ -168,34 +177,39 @@ def print_investor_report(results: Dict[str, Any]) -> None:
     print(f"Coherence Before    : {results['avg_coherence_before']:.4f}")
     print(f"Coherence After     : {results['avg_coherence_after']:.4f}")
     print(f"Improvement         : +{results['coherence_improvement']:.4f} ({results['coherence_improvement']/results['avg_coherence_before']*100:.2f}%)")
-    print(f"Success Rate        : {results['success_rate']*100:.2f}%")
+    print(f"Success Rate        : {results['success_rate']*100:.2f}%  [SYNTHETIC: floor max(0.95, 1-0.7p) is hard-coded]")
     print(f"Spooky Correlation  : {results['spooky_correlation']:.4f}")
     print(f"Entanglement Entropy: {results['entanglement_entropy']:.4f}")
     print(f"System Collapse Rate: {results['collapse_rate']*100:.4f}%")
-    print("="*70)
-    print("Time-symmetric membrane flip + infinity loops: STABLE ✅")
+    print("-"*70)
+    # Conditional status line (previously printed unconditionally).
+    if results["collapse_rate"] == 0:
+        print("Simulated collapses : none in this run [SYNTHETIC; not a stability claim]")
+    else:
+        print(f"Simulated collapses : {results['collapse_rate']*100:.4f}% of trials [SYNTHETIC]")
+    print("All values above are outputs of hand-written formulas (METRIC_TAG=SYNTHETIC).")
     print("="*70 + "\n")
 
-def main(num_iterations: int = 1_000_000_000,
+def main(num_iterations: int = 1_000_000,
          erasure_prob: float = 0.20,
          verbose: bool = False) -> None:
-    """Main entry point for OES-32 benchmark."""
+    """Main entry point for the OES-32 toy simulation (SYNTHETIC)."""
     if verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-    logger.info("Starting OES-32 Investor Edition v14 with upgraded spooky architecture")
+    logger.info("Starting OES-32 v14 toy simulation (classical, SYNTHETIC)")
     results = run_benchmark(
         num_iterations=num_iterations,
         erasure_prob=erasure_prob,
         verbose=verbose
     )
-    print_investor_report(results)
-    logger.info("Benchmark completed successfully!")
+    print_report(results)
+    logger.info("Simulation run finished.")
 
 # ====================== CLI ======================
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="OES-32 Investor Edition v14")
-    parser.add_argument("--iterations", type=int, default=1_000_000_000,
-                        help="Number of iterations (default: 1B = 10x longer for higher precision)")
+    parser = argparse.ArgumentParser(description="OES-32 v14 toy simulation (classical, SYNTHETIC outputs)")
+    parser.add_argument("--iterations", type=int, default=1_000_000,
+                        help="Number of iterations (default: 1,000,000)")
     parser.add_argument("--erasure", type=float, default=0.20, help="Erasure probability (0.0-1.0)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose mode")
     args, unknown = parser.parse_known_args()
@@ -210,9 +224,6 @@ if __name__ == "__main__":
 Google Colab:
 !python oes32_v14_improved.py -v
 
-# Test run (smaller for quick test)
-!python oes32_v14_improved.py --iterations 1000000 --erasure 0.20 -v
-
-# Full 10x longer run (1B iterations - use JAX version for speed on Colab GPU)
-!python oes32_v14_improved.py --iterations 1000000000 --erasure 0.20 -v
+# Quick test run
+!python oes32_v14_improved.py --iterations 100000 --erasure 0.20 -v
 """
