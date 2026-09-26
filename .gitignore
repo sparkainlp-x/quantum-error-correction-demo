@@ -245,3 +245,7 @@ Thumbs.db
 # Notebook / Jupyter files
 .ipynb_checkpoints/
 *.ipynb_checkpoints
+
+# Smoke-test outputs
+run*.txt
+run*.log
