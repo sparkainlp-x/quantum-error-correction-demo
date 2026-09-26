@@ -1,0 +1,3 @@
+# Only third-party import used by oes32_v14_improved.py. Optional: the script
+# runs without it (the progress bar is skipped). Everything else is stdlib.
+tqdm
