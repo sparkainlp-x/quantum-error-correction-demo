@@ -6,6 +6,7 @@ Classical Python toy simulation of OES-32-style metrics. No qubits, no QEC code;
 [![Smoke run](https://github.com/sparkainlp-x/quantum-error-correction-demo/actions/workflows/smoke.yml/badge.svg)](https://github.com/sparkainlp-x/quantum-error-correction-demo/actions/workflows/smoke.yml)
 [![Status: research prototype](https://img.shields.io/badge/status-research%20prototype-orange.svg)](#what-it-is-not)
 [![Outputs: SYNTHETIC](https://img.shields.io/badge/outputs-SYNTHETIC-lightgrey.svg)](#evidence-tags)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22985530.svg)](https://doi.org/10.5281/zenodo.22985530)
 
 > **METRIC_TAG=SYNTHETIC.** Every number this script prints comes from hand-written formulas on generated inputs.
 
@@ -73,6 +74,8 @@ The normative OES-32 residual definition is [oes32-residual@b77b612](https://git
 - OES-512 (16 × OES-32 blocks, weighted latch) is a **TARGET**; source not published ([`oes512-residual`](https://github.com/sparkainlp-x/oes512-residual))
 
 ## Citation
+
+Archived on Zenodo: concept DOI [10.5281/zenodo.22985530](https://doi.org/10.5281/zenodo.22985530) (all versions; resolves to the latest). The v0.1.0 archive is [10.5281/zenodo.22985531](https://doi.org/10.5281/zenodo.22985531).
 
 Citation metadata is in [CITATION.cff](CITATION.cff) (GitHub shows a "Cite this repository" button). This is a toy script: if you mention it, cite a tagged release (or the repository URL and commit SHA) and describe its outputs as SYNTHETIC.
 
