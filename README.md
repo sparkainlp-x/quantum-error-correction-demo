@@ -74,7 +74,7 @@ The normative OES-32 residual definition is [oes32-residual@b77b612](https://git
 
 ## Citation
 
-No formal release or CITATION.cff: this is a toy script. If you mention it, please cite the repository URL and commit SHA, and describe its outputs as SYNTHETIC.
+Citation metadata is in [CITATION.cff](CITATION.cff) (GitHub shows a "Cite this repository" button). This is a toy script: if you mention it, cite a tagged release (or the repository URL and commit SHA) and describe its outputs as SYNTHETIC.
 
 Author: Jean-François Brisson, Spark AI NLP, <https://sparkainlpx.xyz>. Questions: open an issue in this repository.
 
