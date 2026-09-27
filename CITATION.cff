@@ -17,7 +17,7 @@ identifiers:
     description: "Concept DOI (all versions, Zenodo)"
   - type: doi
     value: "10.5281/zenodo.22985531"
-    description: "Version DOI for v0.1.0 (Zenodo)"
+    description: "Version DOI for v0.1.0 (Zenodo); source tree = git tag v0.1.2"
 version: "0.1.0"
 date-released: "2026-09-26"
 abstract: >-
