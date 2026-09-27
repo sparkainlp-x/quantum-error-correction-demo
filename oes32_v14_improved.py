@@ -64,12 +64,14 @@ def simulate_single_trial(erasure_prob: float) -> Dict[str, float]:
     Returns:
         Dictionary containing trial metrics:
         - erasure_prob: Input erasure probability
-        - coherence_before: Coherence before recovery mechanism
-        - coherence_after: Coherence after recovery mechanism
-        - recovery_success: 1 if recovery successful, 0 otherwise
-        - spooky_correlation: Entanglement fidelity metric
-        - entanglement_entropy: System disorder measure
-        - system_collapse: 1 if catastrophic decoherence, 0 otherwise
+        - coherence_before: heuristic score before the modelled recovery step (SYNTHETIC)
+        - coherence_after: heuristic score after the modelled recovery step (SYNTHETIC)
+        - recovery_success: 1 if the Bernoulli recovery draw succeeded, 0 otherwise
+        - spooky_correlation: label for a hand-written formula of coherence_after;
+          not a correlation or entanglement measurement (SYNTHETIC)
+        - entanglement_entropy: label for a hand-written formula of coherence_after;
+          not an entropy of any quantum state (SYNTHETIC)
+        - system_collapse: 1 if coherence_after < 0.60, 0 otherwise (SYNTHETIC)
     """
     # 1. Base coherence before recovery
     base_coherence = 1.0 - (erasure_prob ** 0.95) * 1.05
