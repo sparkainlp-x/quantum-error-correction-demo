@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you mention this toy script, please cite it as below and describe its outputs as SYNTHETIC."
+title: "OES-32 toy simulation (quantum-error-correction-demo)"
+type: software
+authors:
+  - family-names: "Brisson"
+    given-names: "Jean-François"
+    affiliation: "Spark AI NLP"
+    # orcid: "https://orcid.org/0000-0000-0000-0000"  # TODO: add ORCID when available
+repository-code: "https://github.com/sparkainlp-x/quantum-error-correction-demo"
+url: "https://sparkainlpx.xyz"
+license: MIT
+version: "0.1.0"
+date-released: "2026-09-26"
+abstract: >-
+  Classical Python toy simulation of OES-32-style metrics. No qubits and no
+  quantum error-correcting code. Every printed value is SYNTHETIC: output of
+  hand-written formulas on generated inputs (the ~95% success rate is a
+  hard-coded floor, not a measured error-correction rate). Not a benchmark;
+  not hardware, medical, or production software.
+keywords:
+  - oes32
+  - toy-simulation
+  - synthetic
+  - python
+  - research-software
