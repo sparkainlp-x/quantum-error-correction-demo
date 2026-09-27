@@ -7,6 +7,8 @@ All notable changes to this project are documented here. The format follows
 ## [Unreleased]
 
 ### Changed
+- `.zenodo.json` adds the `spark-ai-nlp` Zenodo community.
+- The archived v0.1.0 source tree (DOI 10.5281/zenodo.22985531) is now git tag `v0.1.2` on the rewritten history (same files); the old `v0.1.0` tag was removed.
 - Docstring labels in `oes32_v14_improved.py` no longer call the formula outputs quantum quantities ("Entanglement fidelity metric" → heuristic formula output, SYNTHETIC).
 - CI actions bumped to `actions/checkout@v7` and `actions/setup-python@v7` (Node 24).
 
