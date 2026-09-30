@@ -2,7 +2,7 @@
 
 Classical Python toy simulation of OES-32-style metrics. No qubits, no QEC code; every output is SYNTHETIC.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Smoke run](https://github.com/sparkainlp-x/quantum-error-correction-demo/actions/workflows/smoke.yml/badge.svg)](https://github.com/sparkainlp-x/quantum-error-correction-demo/actions/workflows/smoke.yml)
 [![Status: research prototype](https://img.shields.io/badge/status-research%20prototype-orange.svg)](#what-it-is-not)
 [![Outputs: SYNTHETIC](https://img.shields.io/badge/outputs-SYNTHETIC-lightgrey.svg)](#evidence-tags)
@@ -83,4 +83,8 @@ Author: Jean-François Brisson, Spark AI NLP, <https://sparkainlpx.xyz>. Questio
 
 ## License
 
-[MIT](LICENSE).
+This software is available under the GNU Affero General Public License v3.0 only (AGPL-3.0-only); see [LICENSE](LICENSE).
+
+Organizations that want to use it in proprietary products or services without AGPL obligations can contact the author about a commercial license via https://sparkainlpx.xyz.
+
+Versions published before 2026-09-29 were released under the MIT License and remain available under those terms.

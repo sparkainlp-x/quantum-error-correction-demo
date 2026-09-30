@@ -9,7 +9,7 @@ authors:
     # orcid: "https://orcid.org/0000-0000-0000-0000"  # TODO: add ORCID when available
 repository-code: "https://github.com/sparkainlp-x/quantum-error-correction-demo"
 url: "https://sparkainlpx.xyz"
-license: MIT
+license: AGPL-3.0-only
 doi: "10.5281/zenodo.22985530"
 identifiers:
   - type: doi
