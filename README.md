@@ -41,9 +41,9 @@ Other options: `--iterations N` (default 1,000,000), `--erasure P` (default 0.20
 
 A report with run metadata and SYNTHETIC values for coherence before/after, success rate, "spooky correlation", "entanglement entropy", and collapse rate. The header and footer carry `METRIC_TAG=SYNTHETIC`, and the success-rate line carries its own SYNTHETIC note.
 
-### About the success rate (for example, 94.92%)
+### About the success rate
 
-**SYNTHETIC.** Recovery success is drawn with probability `max(0.95, 1 − 0.7·p_erasure)`, so the success rate is ≈95% by construction for `p_erasure ≥ ~0.07`. Figures such as 94.92% are sampling outcomes of that hard-coded 0.95 floor, not a measured error-correction rate, and are not comparable with any QEC benchmark.
+**SYNTHETIC.** Recovery success is drawn with probability `max(0.95, 1 − 0.7·p_erasure)`, so the success rate is ≈95% by construction for `p_erasure ≥ ~0.07`. Reported figures near 95% are sampling outcomes of that hard-coded 0.95 floor, not a measured error-correction rate, and are not comparable with any QEC benchmark.
 
 ## Tests
 

@@ -10,7 +10,7 @@ formulas below; they are not quantum measurements.
 
 Known property: recovery success is drawn with probability
 max(0.95, 1 - 0.7 * erasure_prob), so the success rate is ~95% by
-construction whenever erasure_prob >= ~0.07. Values such as 94.92% are
+construction whenever erasure_prob >= ~0.07. Values near 95% are
 sampling outcomes of that hard-coded floor, not a measured error-correction rate.
 
 The script models hand-written relationships between:
