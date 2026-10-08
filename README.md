@@ -75,7 +75,7 @@ The normative OES-32 residual definition is [oes32-residual@b77b612](https://git
 
 ## Citation
 
-Archived on Zenodo: concept DOI [10.5281/zenodo.22985530](https://doi.org/10.5281/zenodo.22985530) (all versions; resolves to the latest). The v0.1.0 archive is [10.5281/zenodo.22985531](https://doi.org/10.5281/zenodo.22985531); its source tree is git tag [`v0.1.2`](https://github.com/sparkainlp-x/quantum-error-correction-demo/releases/tag/v0.1.2) (the same files, re-tagged on the rewritten history).
+Archived on Zenodo: concept DOI [10.5281/zenodo.22985530](https://doi.org/10.5281/zenodo.22985530) (all versions; resolves to the latest). The latest version, v0.1.3, is [10.5281/zenodo.23241551](https://doi.org/10.5281/zenodo.23241551). The first archive, labelled v0.1.0 on Zenodo, is [10.5281/zenodo.22985531](https://doi.org/10.5281/zenodo.22985531); its source tree is git tag [`v0.1.2`](https://github.com/sparkainlp-x/quantum-error-correction-demo/releases/tag/v0.1.2) (the same files, re-tagged on the rewritten history).
 
 Citation metadata is in [CITATION.cff](CITATION.cff) (GitHub shows a "Cite this repository" button). This is a toy script: if you mention it, cite a tagged release (or the repository URL and commit SHA) and describe its outputs as SYNTHETIC.
 
